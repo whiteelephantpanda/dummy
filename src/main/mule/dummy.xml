@@ -14,7 +14,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	<db:config name="Database_Config" doc:name="Database Config" doc:id="45e071e8-3197-4902-a98b-84c96a682753" >
 		<db:my-sql-connection host="mysql.irtr.app" port="3306" database="rtr_dev" user="rtrdevusr" password="rtr@2021"/>
 	</db:config>
-	<flow name="dummyFlow" doc:id="b5a910e5-662a-4b0b-986c-0e4f199cbdc5" >
+	<flow name="userbyid" doc:id="b5a910e5-662a-4b0b-986c-0e4f199cbdc5" >
 		<http:listener doc:name="Listener" doc:id="e0eef299-2d01-4bc6-8436-fb0018d7a73e" config-ref="HTTP_Listener_config" path="/userbyid/{userId}"/>
 		<db:select doc:name="Select" doc:id="90529fb0-c28b-498a-890f-cd39efea0829" config-ref="Database_Config">
 			<db:sql >SELECT FIRST_NAME,LAST_NAME, USER_ID FROM USER WHERE USER_ID=:userId</db:sql>
@@ -28,7 +28,22 @@ output application/json
 payload]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger level="INFO" doc:name="Logger" doc:id="6c0cea0e-b9e8-4f7c-9277-a296c14de5c2" message="#[payload]"/>
+		<logger level="INFO" doc:name="Logger" doc:id="6c0cea0e-b9e8-4f7c-9277-a296c14de5c2" message="final"/>
+	</flow>
+	<flow name="Allusers" doc:id="5b1fd24b-c6a8-4232-8b5d-093d107bf81b" >
+		<http:listener doc:name="Listener" doc:id="c338b156-aa86-43cd-ad15-bba25cf3d33a" config-ref="HTTP_Listener_config" path="/users"/>
+		<db:select doc:name="Select" doc:id="56b60a7c-5bf2-4598-9ae2-855678563a90" config-ref="Database_Config" >
+			<db:sql >SELECT FIRST_NAME,LAST_NAME, USER_ID FROM USER </db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="022d0b9d-1afb-4ffb-94ba-bdeab1078b42" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="7ed9922a-055e-4b0b-9101-89478d17e8c1" message="final" />
 	</flow>
 
 	
